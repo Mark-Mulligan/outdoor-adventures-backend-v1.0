@@ -25,19 +25,11 @@ const nameQuery = (name) => ` fullname LIKE '%${name}%'`;
 
 const constructSQLQuery = (designation, states, q) => {
   let sqlString = '';
-  if (designation && states && q) {
-    sqlString += ` WHERE${nameQuery(q)} AND${statesQuery(states)} AND${designationQuery(designation)}`;
-  } else if (q && designation) {
-    sqlString += ` WHERE${nameQuery(q)} AND${designationQuery(designation)}`;
-  } else if (q && states) {
-    sqlString += ` WHERE${nameQuery(q)} AND${statesQuery(states)}`;
-  } else if (designation && states) {
-    sqlString += ` WHERE${statesQuery(states)} AND${designationQuery(designation)}`;
-  } else {
-    if (q) sqlString += ` WHERE${nameQuery(q)}`;
-    if (designation) sqlString += ` WHERE${designationQuery(designation)}`;
-    if (states) sqlString += ` WHERE${statesQuery(states)}`;
-  }
+  if (q || designation || states) sqlString += ` WHERE`;
+  if (q) sqlString += ` ${nameQuery(q)} ${designation || states ? 'AND' : ''}`;
+  if (designation) sqlString += ` ${designationQuery(designation)} ${states ? 'AND' : ''}`;
+  if (states) sqlString += ` ${statesQuery(states)}`;
+
   return sqlString;
 };
 
@@ -48,18 +40,10 @@ const formatQueryData = (data, totalResults, limit, endIndex, page) => {
   formattedData.dataStart = endIndex - limit + 1;
   formattedData.dataEnd = totalResults > endIndex ? endIndex : totalResults;
   formattedData.currentPage = page;
-
-  const results = [];
-  data.forEach(({ fullname, parkcode, states, designation }) => {
-    results.push({
-      fullname,
-      parkcode,
-      states,
-      designation,
-    });
+  formattedData.results = data.map(({ fullname, parkcode, states, designation }) => {
+    return { fullname, parkcode, states, designation };
   });
 
-  formattedData.results = results;
   return formattedData;
 };
 

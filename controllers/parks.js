@@ -47,19 +47,33 @@ const formatQueryData = (data, totalResults, limit, endIndex, page) => {
   return formattedData;
 };
 
+const orderByClause = (orderInput) => {
+  const order = orderInput.split('-');
+  if (
+    (order[0] === 'parkname' || order[0] === 'states' || order[0] === 'designation') &&
+    (order[1] === 'asc' || order[1] === 'desc')
+  ) {
+    return ` ORDER BY ${order[0]} ${order[1]}`;
+  } else {
+    return '';
+  }
+};
+
 exports.getParks = async (req, res) => {
   const limit = parseInt(req.query.limit, 10);
   const page = parseInt(req.query.page, 10);
-  const { designation, states, q } = req.query;
+  const { designation, states, q, order } = req.query;
 
   let queryString = 'SELECT *, count(*) OVER() as totalResults from parks';
 
   queryString += constructSQLQuery(designation, states, q);
+  queryString += order ? orderByClause(order) : '';
 
   const offset = (page - 1) * limit;
   const endIndex = page * limit;
 
   queryString += ` LIMIT ${limit} OFFSET ${offset};`;
+  console.log(queryString);
 
   try {
     const [result] = await connection.promise().query(queryString);

@@ -13,7 +13,6 @@ const setupDB = async () => {
       `https://developer.nps.gov/api/v1/parks?api_key=${process.env.NATIONAL_PARKS_APIKEY}&limit=468`,
     );
     await connection.execute(generateSQLForParks(response.data.data));
-    connection.end();
     console.log('Parks loaded into database');
   } catch (error) {
     console.log(error);

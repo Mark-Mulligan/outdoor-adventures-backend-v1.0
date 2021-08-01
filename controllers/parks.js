@@ -50,7 +50,7 @@ const formatQueryData = (data, totalResults, limit, endIndex, page) => {
 const orderByClause = (orderInput) => {
   const order = orderInput.split('-');
   if (
-    (order[0] === 'parkname' || order[0] === 'parkcode' || order[0] === 'states' || order[0] === 'designation') &&
+    (order[0] === 'fullname' || order[0] === 'parkcode' || order[0] === 'states' || order[0] === 'designation') &&
     (order[1] === 'asc' || order[1] === 'desc')
   ) {
     return ` ORDER BY ${order[0]} ${order[1]}`;

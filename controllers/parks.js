@@ -84,3 +84,17 @@ exports.getParks = async (req, res) => {
     console.log(e);
   }
 };
+
+exports.getParkInfo = async (req, res) => {
+  const parkCode = req.params.parkcode;
+
+  try {
+    const { data } = await axios.get(
+      `https://developer.nps.gov/api/v1/parks?parkCode=${parkCode}&api_key=${process.env.NATIONAL_PARKS_APIKEY}`,
+    );
+    res.status(200).json(data.data);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: 'data could not be fetched' });
+  }
+};

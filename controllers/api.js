@@ -4,5 +4,5 @@ exports.testApiConnection = (req, res) => {
 };
 
 exports.googleMapsKey = (req, res) => {
-  res.status(200).json(process.env.GOOGLE_MAPS_API_KEY);
+  res.status(200).json({ data: process.env.GOOGLE_MAPS_API_KEY });
 };
